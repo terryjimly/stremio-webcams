@@ -62,12 +62,12 @@ function getStreamMobile(url, cb, forced) {
 	// mobile page is smaller, but doesn't have map
 	cacheGet('streams', url, cached => {
 		if (cached && !forced) {
-			verifyStream(cache.streams[url], isValid => {
+			verifyStream(cached, isValid => {
 				if (isValid)
 					cb([{ url: cached, title: 'Live' }])
 				else {
 					delete cache.streams[url]
-					getStreamPhone(url, cb, true)
+					getStreamMobile(url, cb, true)
 				}
 			})
 		} else {
