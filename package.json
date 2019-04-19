@@ -1,0 +1,16 @@
+{
+  "name": "stremio-skylinewebcams",
+  "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./server.js"
+  },
+  "dependencies": {
+    "needle": "^2.2.4",
+    "stremio-addon-sdk": "^1.2.0",
+    "redis": "^2.8.0"
+  },
+  "engines": {
+    "node": "8.10.0"
+  }
+}
