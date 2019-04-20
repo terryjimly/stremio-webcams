@@ -1,5 +1,7 @@
 const needle = require('needle')
 const config = require('./config')
+const http = require('http')
+const parseUrl = require('url').parse
 
 const redis = require('redis').createClient({
   host: 'redis-12799.c114.us-east-1-4.ec2.cloud.redislabs.com',
@@ -56,6 +58,20 @@ function verifyStream(url, cb) {
 	needle.get(url, { headers }, (err, resp, body) => {
 		cb(body && typeof body == 'string' ? !body.includes('#EXT-X-ENDLIST') : false)
 	})
+}
+
+function verifyTimelapse(url, cb) {
+	const uri = parseUrl(url)
+	const options = {
+		method: 'HEAD',
+		host: uri.host,
+		port: uri.port,
+		path: uri.pathname
+	}
+	const req = http.request(options, r => {
+		cb(((r || {}).headers || {})['content-type'] == 'video/mp4')
+	})
+	req.end()
 }
 
 function getStreamMobile(url, cb, forced) {
@@ -122,12 +138,17 @@ function getStream(url, cb) {
 	})
 }
 
-function getTimelapse(url, cb) {
+function getTimelapse(url, cb, forced) {
 	// get timelapse
 	cacheGet('timelapse', url, cached => {
-		if (cached)
-			cb([{ url: cached, title: 'Timelapse' }])
-		else
+		if (cached && !forced) {
+			verifyTimelapse(cached, isValid => {
+				if (isValid)
+					cb([{ url: cached, title: 'Timelapse' }])
+				else
+					getTimelapse(url, cb, true)
+			})
+		} else
 			needle.get(url + '?timelapse=1', { headers }, (err, resp, body) => {
 				if (body && typeof body == 'string') {
 					const tlMatches = body.match(/source:"[^"]+/gm)
