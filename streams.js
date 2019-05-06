@@ -94,7 +94,8 @@ function getStreamMobile(url, cb, forced) {
 						const streams = []
 						const stream = matches[0].substr(13)
 						cacheSet('streams', url, stream)
-						streams.push({ title: 'Live', url: stream })
+						if (!stream.endsWith('live.m3u8?a=')) // this means the stream is offline, it can happen
+							streams.push({ title: 'Live', url: stream })
 						cb(streams)
 					} else
 						cb(false)
@@ -120,7 +121,8 @@ function getStream(url, cb) {
 						const streams = []
 						const stream = matches[0].substr(8)
 						cacheSet('streams', url, stream)
-						streams.push({ title: 'Live', url: stream })
+						if (!stream.endsWith('live.m3u8?a=')) // this means the stream is offline, it can happen
+							streams.push({ title: 'Live', url: stream })
 						const mapMatches = body.match(/href="\/skyline\/webcammap\.php\?w=[^"]+/gm)
 						if ((mapMatches || []).length) {
 							const mapUrl = 'https://www.skylinewebcams.com' + mapMatches[0].substr(6)
