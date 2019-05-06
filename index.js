@@ -67,7 +67,7 @@ addon.defineCatalogHandler(args => {
 					metas.push(toMeta(webcam))
 			})
 			if (metas.length)
-				resolve({ metas, cacheMaxAge: config.cacheTime })
+				resolve({ metas, cacheMaxAge: config.cacheTime / 1000 })
 			else
 				reject('No search results for: ' + args.extra.search)
 		} else {
@@ -83,7 +83,7 @@ addon.defineCatalogHandler(args => {
 						metas.push(toMeta(webcam))
 				})
 				if (metas.length)
-					resolve({ metas: metas.slice(skip, skip + 50), cacheMaxAge: config.cacheTime })
+					resolve({ metas: metas.slice(skip, skip + 50), cacheMaxAge: config.cacheTime / 1000 })
 				else
 					reject('No webcams for filter: ' + args.extra.genre)
 			}
@@ -102,7 +102,7 @@ addon.defineMetaHandler(args => {
 			}
 		})
 		if (meta)
-			resolve({ meta, cacheMaxAge: config.cacheTime })
+			resolve({ meta, cacheMaxAge: config.cacheTime / 1000 })
 		else
 			reject('Could not find meta data for: ' + args.id)
 	})
