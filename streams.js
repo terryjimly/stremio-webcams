@@ -176,7 +176,7 @@ module.exports = (prefix, args) => {
 			getTimelapse(url, timelapse => {
 				const streams = (results || []).concat((timelapse || []))
 				if (streams.length)
-					resolve({ streams, cacheMaxAge: config.streamCacheTime })
+					resolve({ streams, cacheMaxAge: config.streamCacheTime / 1000 })
 				else
 					reject('No streams found for: ' + args.id)
 			})
